@@ -2,16 +2,14 @@ const connection = require('../database/connection');
 const _ = require('lodash');
 const Cardapio = require('../models/Cardapio');
 const ProdutoCardapio = require('../models/ProdutoCardapio');
-const ObjectId = require(`mongodb`)
 
 module.exports = {
   async create(req, res) {
     const { titulo } = req.body;
-    const { id } = await Cardapio.create({
+    const cardapio = await Cardapio.create({
       titulo
     })
-
-    res.json({ id });
+    res.json(cardapio);
   },
 
   async getCategoriasCardapios() {
@@ -19,20 +17,15 @@ module.exports = {
   },
 
   async index(req, res) {
-    // const cardapios = await Cardapio.find();
-    const produtosCardapios = ProdutoCardapio.find()
-    // cardapios.forEach(async (cardapio) => {
-    //   cardapio.produtosCardapio = await ProdutoCardapio.find({
-    //     idCardapio: new ObjectId(cardapio._id)
-    //   });
-    // });
-
-    return res.json(produtosCardapios);
+    const cardapios = await Cardapio.find();
+    return res.json(cardapios);
   },
 
   async delete(req, res) {
     const { id } = req.params;
-    await connection('cardapios').where('id', id).delete();
+    await Cardapio.findByIdAndDelete({
+      _id: id
+    })
     res.status(204).send();
   },
 
