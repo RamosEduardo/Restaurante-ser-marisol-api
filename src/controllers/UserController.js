@@ -1,20 +1,23 @@
 const connection = require('../database/connection');
+const User = require('../models/User');
 
 module.exports = {
   async create(req, res) {
-    const { email, senha } = req.body;
-    console.log('EMAIL ', email);
-    console.log('senha ', senha);
-    const [existente] = await connection('user').select('*').where('email', email);
 
-    if (existente) {
-      res.json('Usuário já cadastrado!')
-    }
+    const { nome, email, senha } = req.body;
+    const existente = await User.findOne({ email })
 
-    const [id] = await connection('user')
-      .insert({ email, senha });
+    if (existente) return res.json({msg: 'Usuário já cadastrado!'})
 
-    res.json({ id, msg: 'Criado com Sucesso' });
+    const user = await User.create({
+      nome,
+      email,
+      senha
+    })
+
+    console.log('USER ', user)
+
+    res.json({ user, msg: 'Criado com Sucesso' });
   },
 
   async index(req, res) {
@@ -23,13 +26,16 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const { id } = req.params;
-    const [existente] = await connection('user').select('*').where('id', id);
-    
+    const { email } = req.params;
+    const existente = await User.findOne({ email })
+
     if (!existente) res.status(400).json({ msg: 'Usuário não existe'})
     
-    await connection('user').where('id', id).delete();
-    res.status(204);
+    const deleted = await User.deleteOne({
+      email
+    });
+
+    res.status(204).json(deleted);
   },
 
   async update(req, res) {
@@ -46,16 +52,18 @@ module.exports = {
   async login(req, res) {
     const { email, senha } = req.body;
 
-    console.log('Email ', email);
+    const existente = await User.findOne({ email })
 
-    const [existente] = await connection('user').select('*').where('email', email);
+    if (!existente) return res.status(400).json({
+      msg: 'Usuário Não existe!'
+    })
 
-    console.log('Existente ', existente);
+    else if (existente.senha !== senha) return res.status(400).json({
+      msg: 'Senha Incorreta!'
+    })
 
-    if (!existente) res.status(400).json({ msg: 'Usuário Não existe!' })
-
-    if (existente.senha !== senha) res.status(400).json({ msg: 'Senha Incorreta!' })
-
-    res.json({ msg: 'Login Efetuado com Sucesso!'});
+    return res.json({
+      msg: 'Login Efetuado com Sucesso!'
+    });
   }
 }

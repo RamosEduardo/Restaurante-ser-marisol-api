@@ -1,20 +1,18 @@
 const connection = require('../database/connection');
+const ProdutoCardapio = require('../models/ProdutoCardapio');
 
 module.exports = {
     async create(req, res) {
-        const { nome, idCardapio, idCategoriaProduto } = req.body;
-        const produtos = await connection('produtosCardapio')
-        .insert({ nome, idCardapio, idCategoriaProduto });
+        const { nome, idCardapio } = req.body;
+        const produtos = await ProdutoCardapio.create({
+            nome,
+            idCardapio,
+        });
         res.json(produtos);
     },
 
     async index(req, res) {
-        const produtosCardapio = await connection('produtosCardapio')
-        .join('categoriasCardapio', 'categoriasCardapio.id', '=', 'produtosCardapio.idCategoriaProduto')
-        .select([
-            'produtosCardapio.*',
-            'categoriasCardapio.nome as categoria'
-        ])
+        const produtosCardapio = await ProdutoCardapio.find();
         return res.json({ produtosCardapio });
     },
 

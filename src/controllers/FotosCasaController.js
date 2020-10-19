@@ -1,9 +1,11 @@
 const connection = require('../database/connection');
 const image2base64 = require('image-to-base64');
+const FotoCasa = require(`../models/FotoCasa`);
+const { clearHaving } = require('../database/connection');
 
 module.exports = {
     create(req, res) {
-        console.log('req',req.file);
+        console.log('req',req);
         
         const { path } = req.file;
 
@@ -11,7 +13,7 @@ module.exports = {
             .then(
                 async (response) => {
                     const imagem = 'data:image/png;base64,' + response;
-                    const [id] = await connection('fotosCasa').insert({
+                    const { id } = await FotoCasa.create({
                         imagem,
                     });
                     res.json({ id });
@@ -24,7 +26,7 @@ module.exports = {
     },
 
     async index(req, res) {
-        const fotosCasa = await connection('fotosCasa').select('*');
+        const fotosCasa = await FotoCasa.find();
         return res.json(fotosCasa)
     },
 
@@ -37,7 +39,7 @@ module.exports = {
 
     async delete(req, res) {
         const { id } = req.params;
-        await connection('fotosCasa').where('id',id).delete();
-        res.status(204).send();
+        await FotoCasa.deleteOne({ id });
+        res.status(204).send({ msg: `Deletado com sucesso` });
     },
 }

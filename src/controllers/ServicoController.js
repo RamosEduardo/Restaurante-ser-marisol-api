@@ -1,5 +1,6 @@
 const connection = require('../database/connection');
 const image2base64 = require('image-to-base64');
+const ServicoOferecidoSchema = require(`../models/ServicoOferecido`);
 
 module.exports = {
     async create(req, res) {
@@ -10,10 +11,12 @@ module.exports = {
         image2base64(path).then(
             async (response) => {
                 const imagem = 'data:image/png;base64,' + response;
-                const [id] = await connection('servicos').insert({
+                console.log(descricao)
+                console.log(titulo)
+                console.log(imagem)
+                const [id] = await ServicoOferecidoSchema.create({
                     imagem,
                     descricao,
-                    servicos_disponiveis:'',
                     titulo
                 });
                 res.json({ id });
@@ -26,23 +29,19 @@ module.exports = {
     },
 
     async index(req, res) {
-        const servicos = await connection('servicos')
-        .select('*');
+        const servicos = await ServicoOferecidoSchema.find()
         return res.json(servicos)
     },
 
     async getById(req, res) {
         const { id } = req.params;
-        const servicos = await connection('servicos')
-        .where('id',id)
-        .select('*')
-        .first();
+        const servicos = await ServicoOferecidoSchema.findById(id)
         return res.json([servicos])
     },
 
     async delete(req, res) {
         const { id } = req.params;
-        await connection('servicos').where('id',id).delete();
+        await ServicoOferecidoSchema.deleteOne({ id });
         res.status(204).send();
     },
 }

@@ -81,6 +81,6 @@ routes.post('/user', UserController.create);
 routes.post('/login', UserController.login)
 routes.get('/user', UserController.index);
 // routes.put('/user', UserController.update);
-// routes.delete('/user/:id', UserController.delete);
+routes.delete('/user', UserController.delete);
 
 module.exports = routes;
