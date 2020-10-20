@@ -17,7 +17,7 @@ module.exports = {
   },
 
   async index(req, res) {
-    const cardapios = await Cardapio.find();
+    const cardapios = await Cardapio.find().populate(`produtos`);
     return res.json(cardapios);
   },
 
@@ -33,7 +33,14 @@ module.exports = {
     const { id } = req.params;
     const { titulo } = req.body;
 
-    await connection('cardapios').where('id', id).update({ titulo });
-    res.status(204).send();
+    const updated = await Cardapio.findOneAndUpdate({
+      _id: id
+    },
+    {
+      titulo
+    })
+
+    // await connection('cardapios').where('id', id).update({ titulo });
+    res.status(204).json({ updated });
   }
 }

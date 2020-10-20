@@ -4,26 +4,19 @@ const Cardapio = require('../models/Cardapio');
 
 module.exports = {
     async create(req, res) {
-        const { nome, idCardapio } = req.body;
+        const { nome, cardapio } = req.body;
 
-        const cardapio = await Cardapio.findById({ _id: idCardapio })
+        const cardapioSelecionado = await Cardapio.findById({ _id: cardapio })
 
-        const produtoCardapio = new ProdutoCardapio({ nome, idCardapio })
-        console.log('produto ', produtoCardapio);
+        const produtoCardapio = new ProdutoCardapio({ nome, cardapio })
 
-        const newProduct = await produtoCardapio.save()
+        await produtoCardapio.save()
 
-        console.log('newProduct', newProduct);
-        console.log('---');
-        console.log(cardapio.produtos);
-        console.log('---');
-        console.log(produtoCardapio);
+        cardapioSelecionado.produtos.push(produtoCardapio);
 
-        await cardapio.produtos.push(produtoCardapio);
+        const newProductCardapio = await cardapioSelecionado.save();
 
-        const cardapioUpdated = await cardapio.save();
-
-        res.json(cardapioUpdated);
+        res.json(newProductCardapio);
     },
 
     async index(req, res) {
@@ -33,16 +26,24 @@ module.exports = {
 
     async delete(req, res) {
         const { id } = req.params;
-        await connection('produtosCardapio').where('id',id).delete();
+
+        await ProdutoCardapio.findByIdAndDelete({
+            _id: id
+        })
+
         res.status(204).send();
     },
 
     async update(req, res) {
         const { id } = req.params;
-        const { nome, idCardapio, idCategoriaProduto } = req.body;
+        const { nome, idCardapio } = req.body;
 
-        await connection('produtosCardapio').where('id',id)
-        .update({ nome, idCardapio, idCategoriaProduto });
+        ProdutoCardapio.findOneAndUpdate({
+            _id: id
+        }, {
+            nome
+        })
+
         res.status(204).send();
     }
 }
