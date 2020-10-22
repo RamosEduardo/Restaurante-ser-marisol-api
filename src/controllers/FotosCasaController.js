@@ -3,6 +3,10 @@ const image2base64 = require('image-to-base64');
 const FotoCasa = require(`../models/FotoCasa`);
 const { clearHaving } = require('../database/connection');
 
+const multer = require('multer')
+const path = require('path')
+const crypto = require('crypto')
+
 module.exports = {
     create(req, res) {
         console.log('req',req);
