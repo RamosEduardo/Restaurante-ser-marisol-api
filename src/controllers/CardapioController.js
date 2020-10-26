@@ -1,7 +1,5 @@
-const connection = require('../database/connection');
 const _ = require('lodash');
 const Cardapio = require('../models/Cardapio');
-const ProdutoCardapio = require('../models/ProdutoCardapio');
 
 module.exports = {
   async create(req, res) {

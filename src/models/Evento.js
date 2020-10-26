@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 
-const CardapioSchema = new mongoose.Schema({
+const EventoSchema = new mongoose.Schema({
   titulo: String,
-  produtos: [{
+  data: Date,
+  fotos: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ProdutoCardapio'
+    ref: 'FotoEvento'
   }]
 });
 
-module.exports = mongoose.model('Cardapio', CardapioSchema)
+module.exports = mongoose.model('Evento', EventoSchema)

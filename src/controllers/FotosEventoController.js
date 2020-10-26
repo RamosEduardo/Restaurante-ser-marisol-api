@@ -1,23 +1,26 @@
-const connection = require('../database/connection');
 const image2base64 = require('image-to-base64');
+
+const FotoEvento = require('../models/FotoCasa');
 
 module.exports = {
     create(req, res) {
-        console.log('param',req.params);
-        console.log('req',req);
-        
-        const { idEvento } = req.params;
+        const { evento } = req.params;
         const { path } = req.file;
 
         image2base64(path)
             .then(
                 async (response) => {
+
+                    const eventoSelecionado = await Evento.findById({ _id: evento })
                     const imagem = 'data:image/png;base64,' + response;
-                    const [id] = await connection('fotosEventos').insert({
-                        imagem,
-                        idEvento,
-                    });
-                    res.json({ id });
+                    const produtoCardapio = new FotoEvento({ imagem, evento })
+                    await produtoCardapio.save()
+                    
+                    eventoSelecionado.produtos.push(produtoCardapio);
+            
+                    const novaFotoEvento = await eventoSelecionado.save();
+                    
+                    res.json(novaFotoEvento);
                 }
             ).catch(
                 (error) => {
@@ -28,7 +31,7 @@ module.exports = {
 
     async index(req, res) {
 
-        const fotosEvento = await connection('fotosEventos').select('*');
+        const fotosEvento = await FotoEvento.find();
 
         return res.json({ fotosEvento })
     },
@@ -36,26 +39,35 @@ module.exports = {
     async getById(req, res) {
         const { id } = req.params;
         
-        const evento = await connection('fotosEventos')
-        .where('id',id).select('*').first();
+        const evento = await FotoEvento.findOne({
+            _id: id
+        })
 
-        return res.json([evento])
+        return res.json(evento)
     },
 
     async delete(req, res) {
-        const { id } = req.params;
-        await connection('fotosEventos').where('id',id).delete();
-        res.status(204).send();
+        try {
+            const { id } = req.params;
+            await FotoEvento.findByIdAndDelete({
+                _id: id
+            });
+            res.status(204).send();
+        } catch (error) {
+            throw new Error(error)
+        }
     },
 
     async update(req, res) {
         const { id } = req.params;
-        const { imagem, idEvento } = req.body;
-        await connection('fotosEventos').where('id',id)
-            .update({
-                imagem: imagem, 
-                idEvento: idEvento,
-            });
+        const { imagem, evento } = req.body;
+
+        FotoEvento.findOneAndUpdate({
+            _id: id
+        }, {
+            imagem,
+            evento
+        })
         res.status(204).send();
     }
 }
