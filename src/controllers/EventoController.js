@@ -40,7 +40,7 @@ module.exports = {
 
     async getById(req, res) {
         const { id } = req.params;
-        const test = await Evento.findById(id)
+        const test = await Evento.findById(id).populate('fotos')
         return res.json(test)
     },
 
