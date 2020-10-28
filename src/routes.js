@@ -58,7 +58,7 @@ routes.delete('/eventos/:id', EventoController.delete);
 routes.put('/eventos', EventoController.update);
 routes.get('/eventos-mes/:mes', EventoController.getByMonth);
 // Fotos Eventos
-routes.post('/fotos-eventos/:idEvento', multer(multerConfig).single('file'), FotosEventoController.create);
+routes.post('/fotos-eventos/:evento', multer(multerConfig).single('file'), FotosEventoController.create);
 routes.get('/fotos-eventos', FotosEventoController.index);
 routes.delete('/fotos-eventos/:id', FotosEventoController.delete);
 routes.put('/fotos-eventos/:id', FotosEventoController.update);

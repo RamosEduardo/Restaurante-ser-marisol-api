@@ -34,34 +34,19 @@ module.exports = {
     },
 
     async index(req, res) {
-
-        let eventos = await Evento.find();
-        // const now = new Date();
-
-        // const listaEventosRecentes = [];
-        // eventos.map((item, index) => {
-        //     if (new Date(item.data) < now)
-        //         listaEventosRecentes.push(item);
-        // });
-        // eventos = [...listaEventosRecentes];
+        const eventos = await Evento.find();
         return res.json(eventos)
     },
 
     async getById(req, res) {
         const { id } = req.params;
-        console.log('Recebeu o id: ', id);
-        const evento = await Evento.findOne({
-            _id: id
-        }).populate('fotos');
-
-        return res.json(evento)
+        const test = await Evento.findById(id)
+        return res.json(test)
     },
 
     async delete(req, res) {
         const { id } = req.params;
-        await Evento.findOneAndDelete({
-            _id: id
-        })
+        await Evento.findByIdAndDelete(id)
         res.status(204).send();
     },
 
@@ -69,14 +54,13 @@ module.exports = {
         const { id } = req.body;
         const { titulo, data } = req.body;
 
-        console.log('BODY ', req.body);
+        await Evento.findByIdAndDelete(id)
 
-        const updated = await Evento.findOne({
-            _id: id,
-        })
+        const { _id } = await Evento.create({
+            titulo,
+            data,
+        });
 
-        console.log('UPDATED ', updated);
-
-        res.status(204).json({updated});
-    }
+        res.json({ _id });
+    },
 }

@@ -1,11 +1,15 @@
 const image2base64 = require('image-to-base64');
 
-const FotoEvento = require('../models/FotoCasa');
+const FotoEvento = require('../models/FotoEvento');
+const Evento = require('../models/Evento');
 
 module.exports = {
     create(req, res) {
         const { evento } = req.params;
         const { path } = req.file;
+
+        console.log('Evento ', evento);
+        console.log('Path ', path);
 
         image2base64(path)
             .then(
@@ -16,7 +20,7 @@ module.exports = {
                     const produtoCardapio = new FotoEvento({ imagem, evento })
                     await produtoCardapio.save()
                     
-                    eventoSelecionado.produtos.push(produtoCardapio);
+                    eventoSelecionado.fotos.push(produtoCardapio);
             
                     const novaFotoEvento = await eventoSelecionado.save();
                     
