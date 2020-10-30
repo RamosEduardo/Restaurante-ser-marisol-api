@@ -8,13 +8,13 @@ module.exports = {
         const { descricao, titulo } = req.params;
         const { path } = req.file;
 
+
+
+
         image2base64(path).then(
             async (response) => {
                 const imagem = 'data:image/png;base64,' + response;
-                console.log(descricao)
-                console.log(titulo)
-                console.log(imagem)
-                const [id] = await ServicoOferecidoSchema.create({
+                const { _id } = await ServicoOferecidoSchema.create({
                     imagem,
                     descricao,
                     titulo
