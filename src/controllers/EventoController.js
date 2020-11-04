@@ -1,7 +1,8 @@
-const connection = require('../database/connection');
 const _ = require('lodash');
 
 const Evento = require('../models/Evento')
+
+const { ObjectId } = require('mongodb')
 
 module.exports = {
     async create(req, res) {
@@ -34,7 +35,7 @@ module.exports = {
     },
 
     async index(req, res) {
-        const eventos = await Evento.find();
+        const eventos = await Evento.find().populate('fotos');
         return res.json(eventos)
     },
 
@@ -51,16 +52,20 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { id } = req.body;
-        const { titulo, data } = req.body;
-
-        await Evento.findByIdAndDelete(id)
-
-        const { _id } = await Evento.create({
-            titulo,
-            data,
-        });
-
-        res.json({ _id });
+        try {
+            const novo = await Evento.updateOne(
+                { _id: ObjectId(req.body._id) },
+                {
+                  $set: {
+                    titulo: req.body.titulo,
+                    data: req.body.data,
+                  }
+                }
+             )
+           
+            res.json({ novo });
+        } catch (error) {
+            throw new Error(error)
+        }
     },
 }

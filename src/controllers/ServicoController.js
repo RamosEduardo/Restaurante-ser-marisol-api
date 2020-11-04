@@ -8,9 +8,6 @@ module.exports = {
         const { descricao, titulo } = req.params;
         const { path } = req.file;
 
-
-
-
         image2base64(path).then(
             async (response) => {
                 const imagem = 'data:image/png;base64,' + response;
@@ -19,11 +16,12 @@ module.exports = {
                     descricao,
                     titulo
                 });
-                res.json({ id });
+                res.json({ _id });
             }
         ).catch(
             (error) => {
                 console.log('erro',error); //Exepection error....
+                throw new Error(error)
             }
         ) 
     },
@@ -41,7 +39,7 @@ module.exports = {
 
     async delete(req, res) {
         const { id } = req.params;
-        await ServicoOferecidoSchema.deleteOne({ id });
+        await ServicoOferecidoSchema.findByIdAndDelete(id);
         res.status(204).send();
     },
 }
