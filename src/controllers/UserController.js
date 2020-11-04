@@ -51,19 +51,24 @@ module.exports = {
 
   async login(req, res) {
     const { email, senha } = req.body;
-
-    const existente = await User.findOne({ email })
-
-    if (!existente) return res.status(400).json({
-      msg: 'Usuário Não existe!'
-    })
-
-    else if (existente.senha !== senha) return res.status(400).json({
-      msg: 'Senha Incorreta!'
+    console.log('LOGIN', email);
+    console.log(senha);
+    const existente = await User.findOne({ email: email })
+    console.log(existente);
+    if (!existente) { 
+      return res.json({
+        status: 400,
+        msg: 'Usuário Não existe!'
+      })
+    }
+    else if (existente.senha !== senha) return res.json({
+      msg: 'Senha Incorreta!',
+      status: 400
     })
 
     return res.json({
-      msg: 'Login Efetuado com Sucesso!'
+      msg: 'Login Efetuado com Sucesso!',
+      status: 200,
     });
   }
 }
