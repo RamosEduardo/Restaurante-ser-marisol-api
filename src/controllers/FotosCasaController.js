@@ -43,7 +43,8 @@ module.exports = {
 
     async delete(req, res) {
         const { id } = req.params;
-        await FotoCasa.deleteOne({ id });
+        console.log('Params ', req.params)
+        await FotoCasa.findByIdAndDelete({ _id: id });
         res.status(204).send({ msg: `Deletado com sucesso` });
     },
 }

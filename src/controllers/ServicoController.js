@@ -16,11 +16,12 @@ module.exports = {
                     descricao,
                     titulo
                 });
-                res.json({ id });
+                res.json({ _id });
             }
         ).catch(
             (error) => {
                 console.log('erro',error); //Exepection error....
+                throw new Error(error)
             }
         ) 
     },
@@ -38,7 +39,7 @@ module.exports = {
 
     async delete(req, res) {
         const { id } = req.params;
-        await ServicoOferecidoSchema.deleteOne({ id });
+        await ServicoOferecidoSchema.findByIdAndDelete(id);
         res.status(204).send();
     },
 }

@@ -7,16 +7,14 @@ module.exports = {
         const { nome, cardapio } = req.body;
 
         const cardapioSelecionado = await Cardapio.findById({ _id: cardapio })
-
+        // Salvando Produto
         const produtoCardapio = new ProdutoCardapio({ nome, cardapio })
-
         await produtoCardapio.save()
-
+        // Salvando Cardápio
         cardapioSelecionado.produtos.push(produtoCardapio);
+        await cardapioSelecionado.save();
 
-        const newProductCardapio = await cardapioSelecionado.save();
-
-        res.json(newProductCardapio);
+        res.json(produtoCardapio);
     },
 
     async index(req, res) {
