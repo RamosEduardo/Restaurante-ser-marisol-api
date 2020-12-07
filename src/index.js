@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 
 const app = express();
 
-mongoose.connect('mongodb+srv://cleiton:091647Cleitonedu@cluster0.llu0r.mongodb.net/rsm?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://rsm2020:2020dadosrsm@bancositersm.8jjsw.mongodb.net/rsm?retryWrites=true&w=majority', {
     useUnifiedTopology: true,
     useNewUrlParser: true
 })
