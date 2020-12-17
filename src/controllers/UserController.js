@@ -21,8 +21,8 @@ module.exports = {
   },
 
   async index(req, res) {
-    const user = await connection('user').select('*');
-    return res.json({user});
+    const user = await User.find();
+    return res.json(user);
   },
 
   async delete(req, res) {

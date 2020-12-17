@@ -2,6 +2,7 @@ const express = require('express');
 const routes = express.Router();
 routes.use(express.json());
 
+const PratosController = require('./controllers/PratosController');
 const ServicoController = require('./controllers/ServicoController');
 const ServicoOferecidoController = require('./controllers/ServicoOferecidoController');
 const InfoController = require('./controllers/InfoController');
@@ -62,10 +63,6 @@ routes.post('/fotos-eventos/:evento', multer(multerConfig).single('file'), Fotos
 routes.get('/fotos-eventos', FotosEventoController.index);
 routes.delete('/fotos-eventos/:id', FotosEventoController.delete);
 routes.put('/fotos-eventos/:id', FotosEventoController.update);
-// Fotos Eventos
-routes.post('/fotos-casa', multer(multerConfig).single('file'), FotosCasaController.create);
-routes.get('/fotos-casa', FotosCasaController.index);
-routes.delete('/fotos-casa/:id', FotosCasaController.delete);
 
 // Fotos Eventos
 routes.post('/estrutura', EstruturaController.create);
@@ -82,5 +79,14 @@ routes.post('/login', UserController.login)
 routes.get('/user', UserController.index);
 // routes.put('/user', UserController.update);
 routes.delete('/user', UserController.delete);
+// Fotos Eventos
+routes.post('/fotos-casa', multer(multerConfig).single('file'), FotosCasaController.create);
+routes.get('/fotos-casa', FotosCasaController.index);
+routes.delete('/fotos-casa/:id', FotosCasaController.delete);
+
+routes.post('/pratos/:titulo', multer(multerConfig).single('file'), PratosController.create);
+routes.get('/pratos', PratosController.index);
+routes.delete('/pratos/:id', PratosController.delete);
+// routes.put('/pratos/:id', Controller.update);
 
 module.exports = routes;
