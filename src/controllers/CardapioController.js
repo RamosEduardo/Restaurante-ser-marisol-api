@@ -21,9 +21,15 @@ module.exports = {
 
   async delete(req, res) {
     const { id } = req.params;
-    await Cardapio.findByIdAndDelete({
+
+    console.log('ID RECEBIDO');
+
+    const resp = await Cardapio.findByIdAndDelete({
       _id: id
     })
+
+    console.log('RESP ', resp);
+
     res.status(204).send();
   },
 
