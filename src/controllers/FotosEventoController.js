@@ -8,9 +8,6 @@ module.exports = {
         const { evento } = req.params;
         const { path } = req.file;
 
-        console.log('Evento ', evento);
-        console.log('Path ', path);
-
         image2base64(path)
             .then(
                 async (response) => {

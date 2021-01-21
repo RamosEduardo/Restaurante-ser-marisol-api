@@ -77,7 +77,7 @@ routes.delete('/logo/:id', LogoController.delete);
 routes.post('/user', UserController.create);
 routes.post('/login', UserController.login)
 routes.get('/user', UserController.index);
-// routes.put('/user', UserController.update);
+routes.put('/recovery', UserController.update);
 routes.delete('/user', UserController.delete);
 // Fotos Eventos
 routes.post('/fotos-casa', multer(multerConfig).single('file'), FotosCasaController.create);

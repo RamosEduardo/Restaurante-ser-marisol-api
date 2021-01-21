@@ -3,7 +3,6 @@ const Prato = require(`../models/Prato`);
 
 module.exports = {
     create(req, res) {
-        console.log('req',req.file);
         
         const { path } = req.file;
 

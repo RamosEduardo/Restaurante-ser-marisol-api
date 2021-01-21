@@ -30,7 +30,7 @@ module.exports = {
     },
 
     async allEvents(req, res) {
-        const eventos = await Evento.find();
+        const eventos = await Evento.find().populate('fotos');
         return res.json({ eventos})
     },
 

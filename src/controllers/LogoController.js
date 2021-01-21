@@ -5,9 +5,6 @@ module.exports = {
     create(req, res) {
         const { filename } = req.file;
 
-        console.log(filename);
-        
-
         image2base64(filename)
             .then(
                 async (response) => {
