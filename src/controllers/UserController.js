@@ -1,21 +1,21 @@
+const { ObjectID } = require('mongodb');
 const connection = require('../database/connection');
 const User = require('../models/User');
 
 module.exports = {
   async create(req, res) {
 
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha, isAdmin } = req.body;
     const existente = await User.findOne({ email })
 
-    if (existente) return res.json({msg: 'Usuário já cadastrado!'})
+    if (existente) return res.json({ msg: 'Usuário já cadastrado!' })
 
     const user = await User.create({
       nome,
       email,
-      senha
+      senha,
+      isAdmin
     })
-
-    console.log('USER ', user)
 
     res.json({ user, msg: 'Criado com Sucesso' });
   },
@@ -29,8 +29,8 @@ module.exports = {
     const { email } = req.params;
     const existente = await User.findOne({ email })
 
-    if (!existente) res.status(400).json({ msg: 'Usuário não existe'})
-    
+    if (!existente) res.status(400).json({ msg: 'Usuário não existe' })
+
     const deleted = await User.deleteOne({
       email
     });
@@ -39,36 +39,60 @@ module.exports = {
   },
 
   async update(req, res) {
-    const { email, senha, senhaAntiga } = req.body;
-
-    const [existente] = await connection('user').select('*').where('email', email).andWhere('senha', senhaAntiga);
-
-    if (!existente) res.status(400)
-
-    await connection('user').where('email', email).update({ senha });
-    res.status(204);
-  },
-
-  async login(req, res) {
-    const { email, senha } = req.body;
-    console.log('LOGIN', email);
-    console.log(senha);
+    const { email, senhaAntiga, novaSenha } = req.body;
     const existente = await User.findOne({ email: email })
-    console.log(existente);
-    if (!existente) { 
+
+    if (!existente) {
       return res.json({
         status: 400,
         msg: 'Usuário Não existe!'
       })
     }
-    else if (existente.senha !== senha) return res.json({
+    if (existente.senha !== senhaAntiga) return res.json({
       msg: 'Senha Incorreta!',
       status: 400
     })
 
-    return res.json({
-      msg: 'Login Efetuado com Sucesso!',
-      status: 200,
-    });
+    existente.senha = novaSenha
+    existente.isAdmin = false
+
+    console.log('SENHA ', existente.senha)
+
+    const retorno = await User.findByIdAndUpdate(new ObjectID(existente._id), existente)
+
+    console.log(retorno)
+
+    res.json({
+      msg: 'Senha Alterada!',
+      status: 200
+    })
+  },
+
+  async login(req, res) {
+    try {
+      const { email, senha } = req.body;
+      const existente = await User.findOne({ email: email })
+      if (!existente) {
+        return res.json({
+          status: 400,
+          msg: 'Usuário Não existe!'
+        })
+      }
+      else if (existente.senha !== senha) return res.json({
+        msg: 'Senha Incorreta!',
+        status: 400
+      })
+
+      console.log('ADMIN ', existente)
+
+      return res.json({
+        msg: 'Login Efetuado com Sucesso!',
+        isAdmin: existente.isAdmin,
+        status: 200,
+      });
+    } catch (error) {
+      return new Error(error)
+    }
+
   }
 }
