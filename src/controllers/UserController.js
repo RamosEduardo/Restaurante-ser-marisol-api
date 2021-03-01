@@ -54,7 +54,6 @@ module.exports = {
     })
 
     existente.senha = novaSenha
-    existente.isAdmin = false
 
     console.log('SENHA ', existente.senha)
 
