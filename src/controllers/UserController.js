@@ -26,7 +26,7 @@ module.exports = {
   },
 
   async delete(req, res) {
-    const { email } = req.params;
+    const { email } = req.body;
     const existente = await User.findOne({ email })
 
     if (!existente) res.status(400).json({ msg: 'Usuário não existe' })
